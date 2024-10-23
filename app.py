@@ -5,8 +5,8 @@
 # ---------------------
 # MODUULIT
 #-------------------------
-import sound # Äänimoduuli
-import video # video moduuli
+import avtools.sound as sound # Äänimoduuli
+import avtools.video as video # video moduuli
 
 # ASETUKSET
 # ---------
