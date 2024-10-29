@@ -68,3 +68,20 @@ def test_wrongCenturySymbolError():
     with pytest.raises(ValueError) as exeptionMessage:
         testSsnWrongCenturySymbol.getDateOfBirth()
     assert str(exeptionMessage.value) == 'Vuosisatamerkki virheellinen'
+
+    # Muita testi tapauksia
+    # -----------------------------
+
+    # Testitapaus 10: henkilötunnuksen pilkkominen
+def test_splitSsn():
+    parts = testSsnOK.splitSsn()
+    assert parts == {'days' : '13',
+                         'months' : '07',
+                         'years' : '28',
+                         'century' : '-',
+                         'number' : '478',
+                         'checksum' : 'N'
+                         }
+def test_getDateOfBirth():
+    testSsnOK.getDateOfBirth()
+    assert testSsnOK.dateOfBirth == '1928-07-13'
