@@ -1,7 +1,7 @@
 # TESTATAAN MODUULIN identityCheck2.py LUOKKIEN TOIMINTAA
 
-import identityCheck2
-import pytest
+import identityCheck2 # Module to be tested
+import pytest # Needed to rise simulated exceptions
 
 # Testeissä käytettävät henkilötunnukset
 # --------------------------------------
@@ -69,19 +69,22 @@ def test_wrongCenturySymbolError():
         testSsnWrongCenturySymbol.getDateOfBirth()
     assert str(exeptionMessage.value) == 'Vuosisatamerkki virheellinen'
 
-    # Muita testi tapauksia
-    # -----------------------------
+# Muita testitapauksia
+# --------------------
 
-    # Testitapaus 10: henkilötunnuksen pilkkominen
+# Testitapaus 10: Henkiötunnuksen pilkkominen, oikea pituus
 def test_splitSsn():
     parts = testSsnOK.splitSsn()
-    assert parts == {'days' : '13',
-                         'months' : '07',
-                         'years' : '28',
-                         'century' : '-',
-                         'number' : '478',
-                         'checksum' : 'N'
-                         }
+    assert parts == {'days': '13',
+                    'months': '07',
+                    'years': '28',
+                    'century': '-',
+                    'number':  '478',
+                    'checksum': 'N'
+                    }
+
+
+# Testitapaus 11: Syntymäaikaominaisuus ISO-pävämäärä
 def test_getDateOfBirth():
     testSsnOK.getDateOfBirth()
     assert testSsnOK.dateOfBirth == '1928-07-13'
