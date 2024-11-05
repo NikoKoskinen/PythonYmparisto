@@ -61,12 +61,72 @@ def createCode128B(text: str) -> str:
     checkSumSymbol = chr(checkSum + 32)
     code128BarcodeString = startChar + text + checkSumSymbol + stopChar
     return code128BarcodeString
+
 # LUOKKA VIIVAKOODEILLE
 # =====================
 
-class Viivakoodi:
-    pass
+class Code128B():
+    """generates Code128B barcodes. Supports variants common, uncommon and Barcodesoft"""
+    def __init__(self, text: str, variant: str) -> None:
+        """Constructor for creating Code128B barcodes
+
+        Args:
+            text (str): A text string to be converted into barcode
+            variant (str): Allowed variants: Common, Uncommon or Barcodesoft
+        """
+        self.text = text
+        self.variant = variant
+        self.validRangeAll = range(33,126)
+        self.validRangeCommon = range(195,202)
+        self.validRangeUncommon = range(200,207)
+        self.validRangeBarcodesoft = range(240,247)
+        self.commonSpecialChar = (32,194,207)
+        self.uncommonSpecialChar = 212
+        self.barcodesoftSpecialChar = 252
+
+
+    def checkValidityOfText(self) -> bool | None:
+
+        textLenght = len(self.text)
+        isValid = False
+        if self.variant == 'Common':
+            for index in range(textLenght):
+                character = self.text[index]
+                characterValue = ord(character)
+            if characterValue in self.validRangeAll or characterValue in self.validRangeCommon or characterValue in self.commonSpecialChar:
+                isValid = True
+            else:
+                raise ValueError('Text string contains invalid characters')
+       
+
+        elif self.variant == 'Uncommon':
+            for index in range(textLenght):
+                character = self.text[index]
+            characterValue = ord(character)
+            if characterValue in self.validRangeAll or characterValue in self.validRangeUncommon or characterValue in self.uncommonSpecialChar:
+                isValid = True
+            else:
+                raise ValueError('Text string contains invalid characters')
+        
+        elif self.variant == 'Uncommon':
+            textLenght = len(self.text)
+        for index in range(textLenght):
+            character = self.text[index]
+            characterValue = ord(character)
+            if characterValue in self.validRangeAll or characterValue in self.validRangeBarcodesoft or characterValue in self.uncommonSpecialChar:
+                isValid = True
+            else:
+                raise ValueError('Text string contains invalid characters')
+            return isValid
+
+ 
+       
+        
 
 if __name__ == "__main__":
-    testString = '128B'
-    print('painotetut arvot yhteensä:',calculateCode128BCheksum(testString))
+    testi = Code128B('128B','Common')
+    try:
+        tulos = testi.checkValidityOfText()
+        print(testi.text, ' on kelvollinen viivakoodiksi', tulos)
+    except Exception as e:
+        print('Tapahtui virhe: ', testi.text, e)
