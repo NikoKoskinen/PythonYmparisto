@@ -54,7 +54,6 @@ def createCode128B(text: str) -> str:
     Returns:
         str: String containing start, barcode, checksum and stop symbols
     """
-    code128BarcodeString = ''
     startChar = chr(204)
     stopChar = chr(206)
     checkSum = calculateCode128BCheksum(text)
@@ -64,69 +63,55 @@ def createCode128B(text: str) -> str:
 
 # LUOKKA VIIVAKOODEILLE
 # =====================
-
-class Code128B():
-    """generates Code128B barcodes. Supports variants common, uncommon and Barcodesoft"""
-    def __init__(self, text: str, variant: str) -> None:
+class Code128B:
+    """Generates Code128B barcodes. Supports variants common, uncommon and Barcodesoft"""
+    
+    def __init__(self, text: str, variant: str = 'Common') -> None:
         """Constructor for creating Code128B barcodes
 
         Args:
             text (str): A text string to be converted into barcode
-            variant (str): Allowed variants: Common, Uncommon or Barcodesoft
+            variant (str): Allowed variants: Common, Uncommon, or Barcodesoft
         """
         self.text = text
         self.variant = variant
-        self.validRangeAll = range(33,126)
-        self.validRangeCommon = range(195,202)
-        self.validRangeUncommon = range(200,207)
-        self.validRangeBarcodesoft = range(240,247)
-        self.commonSpecialChar = (32,194,207)
+        self.validRangeAll = range(33, 126)
+        self.validRangeCommon = range(195, 202)
+        self.validRangeUncommon = range(200, 207)
+        self.validRangeBarcodesoft = range(240, 247)
+        self.commonSpecialChar = (32, 194, 207)
         self.uncommonSpecialChar = 212
         self.barcodesoftSpecialChar = 252
 
-
-    def checkValidityOfText(self) -> bool | None:
-
-        textLenght = len(self.text)
-        isValid = False
-        if self.variant == 'Common':
-            for index in range(textLenght):
-                character = self.text[index]
-                characterValue = ord(character)
-            if characterValue in self.validRangeAll or characterValue in self.validRangeCommon or characterValue in self.commonSpecialChar:
-                isValid = True
-            else:
-                raise ValueError('Text string contains invalid characters')
-       
-
-        elif self.variant == 'Uncommon':
-            for index in range(textLenght):
-                character = self.text[index]
+    def checkValidityOfText(self) -> bool:
+        """Checks the validity of text for the given variant"""
+        for character in self.text:
             characterValue = ord(character)
-            if characterValue in self.validRangeAll or characterValue in self.validRangeUncommon or characterValue in self.uncommonSpecialChar:
-                isValid = True
+            if self.variant == 'Common':
+                if not (characterValue in self.validRangeAll or characterValue in self.validRangeCommon or characterValue in self.commonSpecialChar):
+                    raise ValueError(f'Text string contains invalid characters ({character})')
+            elif self.variant == 'Uncommon':
+                if not (characterValue in self.validRangeAll or characterValue in self.validRangeUncommon or characterValue == self.uncommonSpecialChar):
+                    raise ValueError(f'Text string contains invalid characters ({character})')
+            elif self.variant == 'Barcodesoft':
+                if not (characterValue in self.validRangeAll or characterValue in self.validRangeBarcodesoft or characterValue == self.barcodesoftSpecialChar):
+                    raise ValueError(f'Text string contains invalid characters ({character})')
             else:
-                raise ValueError('Text string contains invalid characters')
-        
-        elif self.variant == 'Uncommon':
-            textLenght = len(self.text)
-        for index in range(textLenght):
-            character = self.text[index]
-            characterValue = ord(character)
-            if characterValue in self.validRangeAll or characterValue in self.validRangeBarcodesoft or characterValue in self.uncommonSpecialChar:
-                isValid = True
-            else:
-                raise ValueError('Text string contains invalid characters')
-            return isValid
+                raise ValueError(f'Invalid variant ({self.variant}), supported variants are Common, Uncommon, and Barcodesoft')
+        return True
 
- 
-       
-        
+    def generateBarcodeContent(self) -> str:
+        """Generates the full barcode content for the text based on the variant"""
+        self.checkValidityOfText()  # Ensure text is valid before generation
+        return createCode128B(self.text)
 
+
+# Main
 if __name__ == "__main__":
-    testi = Code128B('128B','Common')
+    testi = Code128B('128Ö', 'Common')
     try:
         tulos = testi.checkValidityOfText()
-        print(testi.text, ' on kelvollinen viivakoodiksi', tulos)
+        print(testi.text, 'on kelvollinen viivakoodiksi:', tulos)
+        print('Generated barcode content:', testi.generateBarcodeContent())
     except Exception as e:
-        print('Tapahtui virhe: ', testi.text, e)
+        print('Tapahtui virhe:', testi.text, e)
