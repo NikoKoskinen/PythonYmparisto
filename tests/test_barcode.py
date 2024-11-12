@@ -12,7 +12,7 @@ import pytest  # Tarvitaan virheiden generointiin
 
 # Testitapaus 1 Viivakoodin "128B" varmistussumma 
 def test_128BCheckSum():
-    assert barcode.calculateCode128BCheksum('128B') == 56
+    assert barcode.calculateCode128BChecksum('128B') == 56
 
 # Testitapaus 2 Viivakoodin "128B" sisältö
 def test_128BString():
@@ -34,6 +34,7 @@ def test_Common128BValid():
 # Invalid character in Common variant
 text2 = '128Ö'
 barcode2 = barcode.Code128B(text2, 'Common')
+
 def test_invalidCharacterCommon():
     with pytest.raises(ValueError) as errorMessage:
         barcode2.checkValidityOfText()
@@ -51,6 +52,7 @@ def test_invalidVariant():
 
 # Testit Uncommon-variantille
 barcode4 = barcode.Code128B(text1, 'Uncommon')
+
 def test_Uncommon128B():
     assert barcode4.text == '128B'
     assert barcode4.variant == 'Uncommon'
@@ -60,6 +62,7 @@ def test_Uncommon128BValid():
 
 # Invalid character in Uncommon variant
 barcode5 = barcode.Code128B(text2, 'Uncommon')
+
 def test_invalidCharacterUncommon():
     with pytest.raises(ValueError) as errorMessage:
         barcode5.checkValidityOfText()
@@ -67,6 +70,7 @@ def test_invalidCharacterUncommon():
 
 # Testit Barcodesoft-variantille
 barcode6 = barcode.Code128B(text1, 'Barcodesoft')
+
 def test_BarcodeSoft128B():
     assert barcode6.text == '128B'
     assert barcode6.variant == 'Barcodesoft'
@@ -76,6 +80,7 @@ def test_BarcodeSoft128BValid():
 
 # Invalid character in Barcodesoft variant
 barcode7 = barcode.Code128B(text2, 'Barcodesoft')
+
 def test_invalidCharacterBarcodeSoft():
     with pytest.raises(ValueError) as errorMessage:
         barcode7.checkValidityOfText()

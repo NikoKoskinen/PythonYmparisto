@@ -1,37 +1,17 @@
 # MODUULI VIIVAKOODIEN TUOTTAMISEEN
 # =================================
 
-# KIRJASTOT
-# ---------
-
-# ASETUKSET
-# ---------
-
 # FUNKTIOT
 # --------
 
 def barCodeValue(character: str) -> int:
-    """Calculates a value of character used in Code128B barcode generation
-
-    Args:
-        character (str): a single character to convert
-
-    Returns:
-        int: Code128B value for calcultaing the checksum
-    """
+    """Calculates a value of character used in Code128B barcode generation"""
     asciiValue = ord(character)
     code128BValue = asciiValue - 32
     return code128BValue
 
-def calculateCode128BCheksum(text: str) -> int:
-    """Calculates a checksum for a given string
-
-    Args:
-        text (str): text string to use in a barcode
-
-    Returns:
-        int: Modulo 103 checksum of weighted values
-    """
+def calculateCode128BChecksum(text: str) -> int:
+    """Calculates a checksum for a given string"""
     text = text.strip()
     numberOfLetters = len(text)
     weightedSum = 0
@@ -39,40 +19,29 @@ def calculateCode128BCheksum(text: str) -> int:
         letter = text[number]
         code128BValue = barCodeValue(letter)
         weightedValue = code128BValue * (number + 1)
-        weightedSum = weightedSum + weightedValue
-    weightedSum = weightedSum + 104
+        weightedSum += weightedValue
+    weightedSum += 104
     code128BChecksum = weightedSum % 103
     return code128BChecksum
 
 
 def createCode128B(text: str) -> str:
-    """Creates a complete code128B barcode to be printed using Libre Code128 font
-
-    Args:
-        text (str): The text for a barcode without checksum
-
-    Returns:
-        str: String containing start, barcode, checksum and stop symbols
-    """
+    """Creates a complete code128B barcode to be printed using Libre Code128 font"""
     startChar = chr(204)
     stopChar = chr(206)
-    checkSum = calculateCode128BCheksum(text)
+    checkSum = calculateCode128BChecksum(text)
     checkSumSymbol = chr(checkSum + 32)
     code128BarcodeString = startChar + text + checkSumSymbol + stopChar
     return code128BarcodeString
 
 # LUOKKA VIIVAKOODEILLE
 # =====================
+
 class Code128B:
     """Generates Code128B barcodes. Supports variants common, uncommon and Barcodesoft"""
     
     def __init__(self, text: str, variant: str = 'Common') -> None:
-        """Constructor for creating Code128B barcodes
-
-        Args:
-            text (str): A text string to be converted into barcode
-            variant (str): Allowed variants: Common, Uncommon, or Barcodesoft
-        """
+        """Constructor for creating Code128B barcodes"""
         self.text = text
         self.variant = variant
         self.validRangeAll = range(33, 126)
@@ -106,12 +75,12 @@ class Code128B:
         return createCode128B(self.text)
 
 
-# Main
+# Main Testing
 if __name__ == "__main__":
-    testi = Code128B('128Ö', 'Common')
+    barcode_instance = Code128B('128Ö', 'Common')
     try:
-        tulos = testi.checkValidityOfText()
-        print(testi.text, 'on kelvollinen viivakoodiksi:', tulos)
-        print('Generated barcode content:', testi.generateBarcodeContent())
+        result = barcode_instance.checkValidityOfText()
+        print(f'{barcode_instance.text} on kelvollinen viivakoodiksi:', result)
+        print('Generated barcode content:', barcode_instance.generateBarcodeContent())
     except Exception as e:
-        print('Tapahtui virhe:', testi.text, e)
+        print('Tapahtui virhe:', barcode_instance.text, e)
