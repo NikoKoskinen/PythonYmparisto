@@ -1,5 +1,5 @@
-# MALLIPOHJA QT-SOVELLUSTEN RAKENTAMISEEN
-#========================================
+# MALLIPOHJA QT-SOVELLUSTEN RAKENTAMISEEN PySide6-KIRJASTON AVULLA
+# ================================================================
 
 # KIRJASTOJEN JA MODUULIEN LATAUKSET
 # ----------------------------------
@@ -7,32 +7,31 @@
 # Järjestelmäkomentojen kirjasto
 import sys
 
-# QT:n kirjastot
-#from PyQt6.QtWidgets import * # käyttöliittymän elementit (kaikki), korvaa listalla
-#from PyQt6.uic import load_ui
-
-# pyside-kirjastot
-from PySide6.QtWidgets import *
+# Pyside-kirjastot
+from PySide6.QtWidgets import QMainWindow, QLabel, QLineEdit, QPushButton, QApplication # Käyttöliittymän elementit (kaikki), korvaa listalla
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile
 
-# LUOKKA MÄÄRITYKSET
-# ------------------
+# LUOKKAMÄÄRITYKSET
+# -----------------
 
-# Pääikkunan luokka, joka perii QmainWindow- luokan
+# Pääikkunan luokka, joka perii QMainWindow-luokan
 class MainWindow(QMainWindow):
 
+    # Konstruktori
     def __init__(self):
         QMainWindow.__init__(self)
 
-    windowLoader = QUiLoader()
+        # Luodaan käyttöliittymän lataaja
+        windowLoader = QUiLoader()
 
-    uiFile = QFile('mainWindow.ui')
-    window = windowLoader.load(uiFile)
-    window.show()
+        # Annetaan sille käyttöliittymätiedosto
+        
+        windowLoader.load('mainWindow.ui', None)
+        self.setWindowTitle('Hippopotamus')
 
 if __name__ == "__main__":
-    application = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    application = QApplication(sys.argv)      
+    mainWindow = MainWindow()
+    mainWindow.show()
     sys.exit(application.exec())
